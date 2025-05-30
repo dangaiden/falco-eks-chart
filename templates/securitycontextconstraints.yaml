@@ -5,10 +5,10 @@ metadata:
   annotations:
     kubernetes.io/description: |
       This provides the minimum requirements Falco to run in Openshift.
-  name: {{ include "falco.serviceAccountName" . }}
-  namespace: {{ include "falco.namespace" . }}
+  name: {{ include "falco-helm.serviceAccountName" . }}
+  namespace: {{ include "falco-helm.namespace" . }}
   labels:
-    {{- include "falco.labels" . | nindent 4 }}
+    {{- include "falco-helm.labels" . | nindent 4 }}
 allowHostDirVolumePlugin: true
 allowHostIPC: false
 allowHostNetwork: true
@@ -34,7 +34,7 @@ seccompProfiles:
 supplementalGroups:
   type: RunAsAny
 users:
-- system:serviceaccount:{{ include "falco.namespace" . }}:{{ include "falco.serviceAccountName" . }}
+- system:serviceaccount:{{ include "falco-helm.namespace" . }}:{{ include "falco-helm.serviceAccountName" . }}
 volumes:
 - configMap
 - emptyDir

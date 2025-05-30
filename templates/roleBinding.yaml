@@ -2,15 +2,15 @@
 kind: RoleBinding
 apiVersion: {{ include "rbac.apiVersion" . }}
 metadata:
-  name: {{ include "falco.fullname" . }}
+  name: {{ include "falco-helm.fullname" . }}
   labels:
-    {{- include "falco.labels" . | nindent 4 }}
+    {{- include "falco-helm.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "falco.serviceAccountName" . }}
-    namespace: {{ include "falco.namespace" . }}
+    name: {{ include "falco-helm.serviceAccountName" . }}
+    namespace: {{ include "falco-helm.namespace" . }}
 roleRef:
   kind: Role
-  name: {{ include "falco.fullname" . }}
+  name: {{ include "falco-helm.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 {{- end }}

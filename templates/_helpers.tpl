@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "falco.name" -}}
+{{- define "falco-helm.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "falco.fullname" -}}
+{{- define "falco-helm.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,23 +26,23 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "falco.chart" -}}
+{{- define "falco-helm.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Allow the release namespace to be overridden
 */}}
-{{- define "falco.namespace" -}}
+{{- define "falco-helm.namespace" -}}
 {{- default .Release.Namespace .Values.namespaceOverride -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "falco.labels" -}}
-helm.sh/chart: {{ include "falco.chart" . }}
-{{ include "falco.selectorLabels" . }}
+{{- define "falco-helm.labels" -}}
+helm.sh/chart: {{ include "falco-helm.chart" . }}
+{{ include "falco-helm.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -52,17 +52,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "falco.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "falco.name" . }}
+{{- define "falco-helm.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "falco-helm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Renders a value that contains template.
 Usage:
-{{ include "falco.renderTemplate" ( dict "value" .Values.path.to.the.Value "context" $) }}
+{{ include "falco-helm.renderTemplate" ( dict "value" .Values.path.to.the.Value "context" $) }}
 */}}
-{{- define "falco.renderTemplate" -}}
+{{- define "falco-helm.renderTemplate" -}}
     {{- if typeIs "string" .value }}
         {{- tpl .value .context }}
     {{- else }}
@@ -73,9 +73,9 @@ Usage:
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "falco.serviceAccountName" -}}
+{{- define "falco-helm.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "falco.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "falco-helm.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -84,7 +84,7 @@ Create the name of the service account to use
 {{/*
 Return the proper Falco image name
 */}}
-{{- define "falco.image" -}}
+{{- define "falco-helm.image" -}}
 {{- with .Values.image.registry -}}
     {{- . }}/
 {{- end -}}
@@ -95,7 +95,7 @@ Return the proper Falco image name
 {{/*
 Return the proper Falco driver loader image name
 */}}
-{{- define "falco.driverLoader.image" -}}
+{{- define "falco-helm.driverLoader.image" -}}
 {{- with .Values.driver.loader.initContainer.image.registry -}}
     {{- . }}/
 {{- end -}}
@@ -113,7 +113,7 @@ Return the proper Falcoctl image name
 {{/*
 Extract the unixSocket's directory path
 */}}
-{{- define "falco.unixSocketDir" -}}
+{{- define "falco-helm.unixSocketDir" -}}
 {{- if and .Values.falco.grpc.enabled .Values.falco.grpc.bind_address (hasPrefix "unix://" .Values.falco.grpc.bind_address) -}}
 {{- .Values.falco.grpc.bind_address | trimPrefix "unix://" | dir -}}
 {{- end -}}
@@ -135,7 +135,7 @@ Return the appropriate apiVersion for rbac.
 */}}
 {{- define "falcosidekick.url" -}}
 {{- if not .Values.falco.http_output.url -}}
-    {{- $falcoName := include "falco.fullname" . -}}
+    {{- $falcoName := include "falco-helm.fullname" . -}}
     {{- $listenPort := .Values.falcosidekick.listenport | default "2801" -}}
     {{- if .Values.falcosidekick.fullfqdn -}}
        {{- printf "http://%s-falcosidekick.%s.svc.cluster.local:%s" $falcoName .Release.Namespace $listenPort -}}
@@ -151,7 +151,7 @@ Return the appropriate apiVersion for rbac.
 {{/*
 Set appropriate falco configuration if falcosidekick has been configured.
 */}}
-{{- define "falco.falcosidekickConfig" -}}
+{{- define "falco-helm.falcosidekickConfig" -}}
 {{- if .Values.falcosidekick.enabled  -}}
     {{- $_ := set .Values.falco "json_output" true -}}
     {{- $_ := set .Values.falco "json_include_output_property" true -}}
@@ -183,7 +183,7 @@ By default the syscall source is always enabled in falco. If no syscall source i
 exits. Here we check that no producers for syscalls event has been configured, and if true
 we just disable the sycall source.
 */}}
-{{- define "falco.configSyscallSource" -}}
+{{- define "falco-helm.configSyscallSource" -}}
 {{- $userspaceDisabled := true -}}
 {{- $gvisorDisabled := (ne .Values.driver.kind  "gvisor") -}}
 {{- $driverDisabled :=  (not .Values.driver.enabled) -}}
@@ -202,9 +202,9 @@ is deployed within the Falco pod when gVisor is enabled. The image is the same a
 deploying and the configuration logic is a bash script passed as argument on the fly. This solution should
 be temporary and will stay here until we move this logic to the falcoctl tool.
 */}}
-{{- define "falco.gvisor.initContainer" -}}
+{{- define "falco-helm.gvisor.initContainer" -}}
 - name: {{ .Chart.Name }}-gvisor-init
-  image: {{ include "falco.image" . }}
+  image: {{ include "falco-helm.image" . }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   args:
     - /bin/bash
@@ -282,7 +282,7 @@ be temporary and will stay here until we move this logic to the falcoctl tool.
       {{- end }}
   {{- if .Values.falcoctl.artifact.install.env }}
   env:
-  {{- include "falco.renderTemplate" ( dict "value" .Values.falcoctl.artifact.install.env "context" $) | nindent 4 }}
+  {{- include "falco-helm.renderTemplate" ( dict "value" .Values.falcoctl.artifact.install.env "context" $) | nindent 4 }}
   {{- end }}
 {{- end -}}
 
@@ -316,7 +316,7 @@ be temporary and will stay here until we move this logic to the falcoctl tool.
       {{- end }}
   {{- if .Values.falcoctl.artifact.follow.env }}
   env:
-  {{- include "falco.renderTemplate" ( dict "value" .Values.falcoctl.artifact.follow.env "context" $) | nindent 4 }}
+  {{- include "falco-helm.renderTemplate" ( dict "value" .Values.falcoctl.artifact.follow.env "context" $) | nindent 4 }}
   {{- end }}
 {{- end -}}
 
@@ -375,7 +375,7 @@ be temporary and will stay here until we move this logic to the falcoctl tool.
 {{/*
 Based on the user input it populates the driver configuration in the falco config map.
 */}}
-{{- define "falco.engineConfiguration" -}}
+{{- define "falco-helm.engineConfiguration" -}}
 {{- if .Values.driver.enabled -}}
 {{- $supportedDrivers := list "kmod" "ebpf" "modern_ebpf" "gvisor" "auto" -}}
 {{- $aliasDrivers := list "module" "modern-bpf" -}}
@@ -416,7 +416,7 @@ true
 {{/*
 Based on the user input it populates the metrics configuration in the falco config map.
 */}}
-{{- define "falco.metricsConfiguration" -}}
+{{- define "falco-helm.metricsConfiguration" -}}
 {{- if .Values.metrics.enabled -}}
 {{- $_ := set .Values.falco.webserver "prometheus_metrics_enabled" true -}}
 {{- $_ = set .Values.falco.webserver "enabled" true -}}
@@ -437,7 +437,7 @@ Based on the user input it populates the metrics configuration in the falco conf
 {{/*
 This helper is used to add the container plugin to the falco configuration.
 */}}
-{{ define "falco.containerPlugin" -}}
+{{ define "falco-helm.containerPlugin" -}}
 {{ if and .Values.driver.enabled .Values.collectors.enabled -}}
 {{ if and (or .Values.collectors.docker.enabled .Values.collectors.crio.enabled .Values.collectors.containerd.enabled) .Values.collectors.containerEngine.enabled -}}
 {{ fail "You can not enable one of the [docker, containerd, crio] collectors configuration and the containerEngine configuration at the same time. Please use the containerEngine configuration since the old configurations are deprecated." }}
@@ -479,7 +479,7 @@ This helper is used to add the container plugin to the falco configuration.
 {{/*
 This helper is used to add container plugin volumes to the falco pod.
 */}}
-{{- define "falco.containerPluginVolumes" -}}
+{{- define "falco-helm.containerPluginVolumes" -}}
 {{- if and .Values.driver.enabled .Values.collectors.enabled -}}
 {{- if and (or .Values.collectors.docker.enabled .Values.collectors.crio.enabled .Values.collectors.containerd.enabled) .Values.collectors.containerEngine.enabled -}}
 {{ fail "You can not enable one of the [docker, containerd, crio] collectors configuration and the containerEngine configuration at the same time. Please use the containerEngine configuration since the old configurations are deprecated." }}
@@ -512,7 +512,7 @@ This helper is used to add container plugin volumes to the falco pod.
 {{/*
 This helper is used to add container plugin volumeMounts to the falco pod.
 */}}
-{{- define "falco.containerPluginVolumeMounts" -}}
+{{- define "falco-helm.containerPluginVolumeMounts" -}}
 {{- if and .Values.driver.enabled .Values.collectors.enabled -}}
 {{- if and (or .Values.collectors.docker.enabled .Values.collectors.crio.enabled .Values.collectors.containerd.enabled) .Values.collectors.containerEngine.enabled -}}
 {{ fail "You can not enable one of the [docker, containerd, crio] collectors configuration and the containerEngine configuration at the same time. Please use the containerEngine configuration since the old configurations are deprecated." }}

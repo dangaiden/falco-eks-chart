@@ -77,7 +77,7 @@ podSecurityContext: {}
 #      - PERFMON
 #      - SYS_PTRACE
 #
-# -- Set securityContext for the Falco container.For more info see the "falco-helm.securityContext" helper in "pod-template.tpl"
+# -- Set securityContext for the Falco container.For more info see the "falco.securityContext" helper in "pod-template.tpl"
 containerSecurityContext: {}
 
 scc:
@@ -535,7 +535,7 @@ falcoctl:
     # -- Runs "falcoctl artifact install" command as an init container. It is used to install artfacts before
     # Falco starts. It provides them to Falco by using an emptyDir volume.
     install:
-      enabled: false
+      enabled: true
       # -- Extra environment variables that will be pass onto falcoctl-artifact-install init container.
       env: []
       # -- Arguments to pass to the falcoctl-artifact-install init container.
@@ -553,7 +553,7 @@ falcoctl:
     # correct folder by falcoctl. To prevent new versions of artifacts from breaking Falco, the tool checks if it is compatible
     # with the running version of Falco before installing it.
     follow:
-      enabled: false
+      enabled: true
       # -- Extra environment variables that will be pass onto falcoctl-artifact-follow sidecar container.
       env: []
       # -- Arguments to pass to the falcoctl-artifact-follow sidecar container.

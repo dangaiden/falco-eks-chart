@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "falco.fullname" . }}-rules
-  namespace: {{ include "falco.namespace" . }}
+  name: {{ include "falco-helm.fullname" . }}-rules
+  namespace: {{ include "falco-helm.namespace" . }}
   labels:
-    {{- include "falco.labels" . | nindent 4 }}
+    {{- include "falco-helm.labels" . | nindent 4 }}
 data:
 {{- range $file, $content :=  .Values.customRules }}
   {{ $file }}: |-
