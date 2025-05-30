@@ -1,4 +1,17 @@
 {{/*
+Base name for resources - use this for volume names, config names, etc.
+*/}}
+{{- define "falco-helm.baseName" -}}
+{{- if .Values.baseName }}
+{{- .Values.baseName }}
+{{- else if .Chart.Annotations }}
+{{- index .Chart.Annotations "falco-helm.baseName" | default "falco" }}
+{{- else }}
+{{- printf "falco" }}
+{{- end }}
+{{- end }}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "falco-helm.name" -}}

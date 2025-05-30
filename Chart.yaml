@@ -2,6 +2,8 @@ apiVersion: v2
 name: falco-helm
 version: 4.22.0
 appVersion: "0.41.0"
+annotations:
+  falco-helm.baseName: "falco"
 description: Falco
 keywords:
   - monitoring

@@ -15,11 +15,11 @@ metadata:
     {{- if .Values.driver.enabled }}
     {{- if (or (eq .Values.driver.kind "modern_ebpf") (eq .Values.driver.kind "modern-bpf")) }}
     {{- if .Values.driver.modernEbpf.leastPrivileged }}
-    container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+    container.apparmor.security.beta.kubernetes.io/{{ include "falco-helm.baseName" . }}: unconfined
     {{- end }}
     {{- else if eq .Values.driver.kind "ebpf" }}
     {{- if .Values.driver.ebpf.leastPrivileged }}
-    container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+    container.apparmor.security.beta.kubernetes.io/{{ include "falco-helm.baseName" . }}: unconfined
     {{- end }}
     {{- end }}
     {{- end }}
@@ -63,7 +63,7 @@ spec:
   dnsPolicy: ClusterFirstWithHostNet
   {{- end }}
   containers:
-    - name: {{ .Chart.Name }}
+    - name: {{ include "falco-helm.baseName" . }}
       image: {{ include "falco-helm.image" . }}
       imagePullPolicy: {{ .Values.image.pullPolicy }}
       resources:
@@ -316,7 +316,7 @@ spec:
     {{- end -}}
 
 {{- define "falco-helm.driverLoader.initContainer" -}}
-- name: {{ .Chart.Name }}-driver-loader
+- name: {{ include "falco-helm.baseName" . }}-driver-loader
   image: {{ include "falco-helm.driverLoader.image" . }}
   imagePullPolicy: {{ .Values.driver.loader.initContainer.image.pullPolicy }}
   args:
