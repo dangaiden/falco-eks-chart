@@ -12,7 +12,7 @@ image:
   # -- The image repository to pull from
   repository: sysdig/falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.41.0"
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
@@ -347,7 +347,7 @@ driver:
         # -- The image repository to pull from.
         repository: sysdig/falco-driver-loader
         #  -- Overrides the image tag whose default is the chart appVersion.
-        tag: ""
+        tag: "0.41.0"
       # -- Extra environment variables that will be pass onto Falco driver loader init container.
       env: []
       # -- Arguments to pass to the Falco driver loader init container.
