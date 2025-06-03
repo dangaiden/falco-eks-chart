@@ -1,8 +1,8 @@
-{{- define "falco.podTemplate" -}}
+{{- define "falco-helm.podTemplate" -}}
 metadata:
-  name: {{ include "falco.fullname" . }}
+  name: {{ include "falco-helm.fullname" . }}
   labels:
-    {{- include "falco.selectorLabels" . | nindent 4 }}
+    {{- include "falco-helm.selectorLabels" . | nindent 4 }}
     {{- with .Values.podLabels }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -15,11 +15,11 @@ metadata:
     {{- if .Values.driver.enabled }}
     {{- if (or (eq .Values.driver.kind "modern_ebpf") (eq .Values.driver.kind "modern-bpf")) }}
     {{- if .Values.driver.modernEbpf.leastPrivileged }}
-    container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+    container.apparmor.security.beta.kubernetes.io/{{ include "falco-helm.baseName" . }}: unconfined
     {{- end }}
     {{- else if eq .Values.driver.kind "ebpf" }}
     {{- if .Values.driver.ebpf.leastPrivileged }}
-    container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+    container.apparmor.security.beta.kubernetes.io/{{ include "falco-helm.baseName" . }}: unconfined
     {{- end }}
     {{- end }}
     {{- end }}
@@ -27,7 +27,7 @@ metadata:
       {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  serviceAccountName: {{ include "falco.serviceAccountName" . }}
+  serviceAccountName: {{ include "falco-helm.serviceAccountName" . }}
   {{- with .Values.podSecurityContext }}
   securityContext:
     {{- toYaml . | nindent 4}}
@@ -63,16 +63,16 @@ spec:
   dnsPolicy: ClusterFirstWithHostNet
   {{- end }}
   containers:
-    - name: {{ .Chart.Name }}
-      image: {{ include "falco.image" . }}
+    - name: {{ include "falco-helm.baseName" . }}
+      image: {{ include "falco-helm.image" . }}
       imagePullPolicy: {{ .Values.image.pullPolicy }}
       resources:
         {{- toYaml .Values.resources | nindent 8 }}
       securityContext:
-        {{- include "falco.securityContext" . | nindent 8 }}
+        {{- include "falco-helm.securityContext" . | nindent 8 }}
       args:
         - /usr/bin/falco
-        {{- include "falco.configSyscallSource" . | indent 8 }}
+        {{- include "falco-helm.configSyscallSource" . | indent 8 }}
     {{- with .Values.extra.args }}
       {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -88,7 +88,7 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
       {{- if .Values.extra.env }}
-      {{- include "falco.renderTemplate" ( dict "value" .Values.extra.env "context" $) | nindent 8 }}
+      {{- include "falco-helm.renderTemplate" ( dict "value" .Values.extra.env "context" $) | nindent 8 }}
       {{- end }}
       tty: {{ .Values.tty }}
       {{- if .Values.falco.webserver.enabled }}
@@ -118,7 +118,7 @@ spec:
           {{- end }}
       {{- end }}
       volumeMounts:
-      {{- include "falco.containerPluginVolumeMounts" . | nindent 8 -}}
+      {{- include "falco-helm.containerPluginVolumeMounts" . | nindent 8 -}}
       {{- if or .Values.falcoctl.artifact.install.enabled .Values.falcoctl.artifact.follow.enabled }}
       {{- if has "rulesfile" .Values.falcoctl.config.artifact.allowedTypes }}
         - mountPath: /etc/falco
@@ -181,7 +181,7 @@ spec:
           name: client-certs-volume
           readOnly: true
         {{- end }}
-        {{- include "falco.unixSocketVolumeMount"  . | nindent 8 -}}
+        {{- include "falco-helm.unixSocketVolumeMount"  . | nindent 8 -}}
         {{- with .Values.mounts.volumeMounts }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -204,16 +204,16 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- if eq .Values.driver.kind "gvisor" }}
-  {{- include "falco.gvisor.initContainer" . | nindent 4 }}
+  {{- include "falco-helm.gvisor.initContainer" . | nindent 4 }}
   {{- end }}
   {{- if eq (include "driverLoader.enabled" .) "true" }}
-    {{- include "falco.driverLoader.initContainer" . | nindent 4 }}
+    {{- include "falco-helm.driverLoader.initContainer" . | nindent 4 }}
   {{- end }}
   {{- if .Values.falcoctl.artifact.install.enabled }}
     {{- include "falcoctl.initContainer" . | nindent 4 }}
   {{- end }}
   volumes:
-    {{- include "falco.containerPluginVolumes" . | nindent 4 -}}
+    {{- include "falco-helm.containerPluginVolumes" . | nindent 4 -}}
     {{- if .Values.falcoctl.artifact.install.enabled }}
     {{- if eq (include "driverLoader.enabled" .) "true" }}
     - name: specialized-falco-configs
@@ -275,20 +275,20 @@ spec:
     {{- end }}
     - name: falcoctl-config-volume
       configMap: 
-        name: {{ include "falco.fullname" . }}-falcoctl
+        name: {{ include "falco-helm.fullname" . }}-falcoctl
         items:
           - key: falcoctl.yaml
             path: falcoctl.yaml
     - name: falco-yaml
       configMap:
-        name: {{ include "falco.fullname" . }}
+        name: {{ include "falco-helm.fullname" . }}
         items:
         - key: falco.yaml
           path: falco.yaml
     {{- if .Values.customRules }}
     - name: rules-volume
       configMap:
-        name: {{ include "falco.fullname" . }}-rules
+        name: {{ include "falco-helm.fullname" . }}-rules
     {{- end }}
     {{- if or .Values.certs.existingSecret (and .Values.certs.server.key .Values.certs.server.crt .Values.certs.ca.crt) }}
     - name: certs-volume
@@ -296,7 +296,7 @@ spec:
         {{- if .Values.certs.existingSecret }}
         secretName: {{ .Values.certs.existingSecret }}
         {{- else }}
-        secretName: {{ include "falco.fullname" . }}-certs
+        secretName: {{ include "falco-helm.fullname" . }}-certs
         {{- end }}
     {{- end }}
     {{- if or .Values.certs.existingClientSecret (and .Values.certs.client.key .Values.certs.client.crt .Values.certs.ca.crt) }}
@@ -305,19 +305,19 @@ spec:
         {{- if .Values.certs.existingClientSecret }}
         secretName: {{ .Values.certs.existingClientSecret }}
         {{- else }}
-        secretName: {{ include "falco.fullname" . }}-client-certs
+        secretName: {{ include "falco-helm.fullname" . }}-client-certs
         {{- end }}
     {{- end }}
-    {{- include "falco.unixSocketVolume" . | nindent 4 -}}
+    {{- include "falco-helm.unixSocketVolume" . | nindent 4 -}}
     {{- with .Values.mounts.volumes }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- end -}}
     {{- end -}}
 
-{{- define "falco.driverLoader.initContainer" -}}
-- name: {{ .Chart.Name }}-driver-loader
-  image: {{ include "falco.driverLoader.image" . }}
+{{- define "falco-helm.driverLoader.initContainer" -}}
+- name: {{ include "falco-helm.baseName" . }}-driver-loader
+  image: {{ include "falco-helm.driverLoader.image" . }}
   imagePullPolicy: {{ .Values.driver.loader.initContainer.image.pullPolicy }}
   args:
   {{- with .Values.driver.loader.initContainer.args }}
@@ -363,7 +363,7 @@ spec:
     - name: HOST_ROOT
       value: /host
   {{- if .Values.driver.loader.initContainer.env }}
-  {{- include "falco.renderTemplate" ( dict "value" .Values.driver.loader.initContainer.env "context" $) | nindent 4 }}
+  {{- include "falco-helm.renderTemplate" ( dict "value" .Values.driver.loader.initContainer.env "context" $) | nindent 4 }}
   {{- end }}
   {{- if eq .Values.driver.kind "auto" }}
     - name: FALCOCTL_DRIVER_CONFIG_NAMESPACE
@@ -371,14 +371,14 @@ spec:
         fieldRef:
           fieldPath: metadata.namespace
     - name: FALCOCTL_DRIVER_CONFIG_CONFIGMAP
-      value: {{ include "falco.fullname" . }}
+      value: {{ include "falco-helm.fullname" . }}
   {{- else }}
     - name: FALCOCTL_DRIVER_CONFIG_UPDATE_FALCO
       value: "false"
   {{- end }}
 {{- end -}}
 
-{{- define "falco.securityContext" -}}
+{{- define "falco-helm.securityContext" -}}
 {{- $securityContext := dict -}}
 {{- if .Values.driver.enabled -}}
   {{- if (or (eq .Values.driver.kind "kmod") (eq .Values.driver.kind "module") (eq .Values.driver.kind "auto")) -}}
@@ -407,17 +407,17 @@ spec:
 {{- end -}}
 
 
-{{- define "falco.unixSocketVolumeMount" -}}
+{{- define "falco-helm.unixSocketVolumeMount" -}}
 {{- if and .Values.falco.grpc.enabled .Values.falco.grpc.bind_address (hasPrefix "unix://" .Values.falco.grpc.bind_address) }}
-- mountPath: {{ include "falco.unixSocketDir" . }}
+- mountPath: {{ include "falco-helm.unixSocketDir" . }}
   name: grpc-socket-dir
 {{- end }}
 {{- end -}}
 
-{{- define "falco.unixSocketVolume" -}}
+{{- define "falco-helm.unixSocketVolume" -}}
 {{- if and .Values.falco.grpc.enabled .Values.falco.grpc.bind_address (hasPrefix "unix://" .Values.falco.grpc.bind_address) }}
 - name: grpc-socket-dir
   hostPath:
-    path: {{ include "falco.unixSocketDir" . }}
+    path: {{ include "falco-helm.unixSocketDir" . }}
 {{- end }}
 {{- end -}}

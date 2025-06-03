@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "falco.fullname" . }}
-  namespace: {{ include "falco.namespace" . }}
+  name: {{ include "falco-helm.fullname" . }}
+  namespace: {{ include "falco-helm.namespace" . }}
   labels:
-    {{- include "falco.labels" . | nindent 4 }}
+    {{- include "falco-helm.labels" . | nindent 4 }}
     {{- if .Values.controller.labels }}
       {{- toYaml .Values.controller.labels | nindent 4 }}
     {{- end }}
@@ -16,9 +16,9 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "falco.selectorLabels" . | nindent 6 }}
+      {{- include "falco-helm.selectorLabels" . | nindent 6 }}
   template:
-    {{- include "falco.podTemplate" . | nindent 4 }}
+    {{- include "falco-helm.podTemplate" . | nindent 4 }}
   {{- with .Values.controller.daemonset.updateStrategy }}
   updateStrategy:
     {{- toYaml . | nindent 4 }}

@@ -2,14 +2,14 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ include "falco.fullname" . }}-grpc
-  namespace: {{ include "falco.namespace" . }}
+  name: {{ include "falco-helm.fullname" . }}-grpc
+  namespace: {{ include "falco-helm.namespace" . }}
   labels:
-    {{- include "falco.labels" . | nindent 4 }}
+    {{- include "falco-helm.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   selector:
-    {{- include "falco.selectorLabels" . | nindent 4 }}
+    {{- include "falco-helm.selectorLabels" . | nindent 4 }}
   ports:
   - protocol: TCP
     port: {{ include "grpc.port" . }}
