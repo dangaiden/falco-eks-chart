@@ -120,14 +120,11 @@ Extract the unixSocket's directory path
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for rbac.
+Define rbac.authorization.k8s.io/v1 as default apiVersion for RBAC resourcesAdd commentMore actions
+requiring Kubernetes 1.8+ as per docs: https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.8.md
 */}}
 {{- define "rbac.apiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
 {{- print "rbac.authorization.k8s.io/v1" -}}
-{{- else -}}
-{{- print "rbac.authorization.k8s.io/v1beta1" -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
