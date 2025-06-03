@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "falco-helm.fullname" . }}-metrics
-  namespace: {{ include "falco-helm.namespace" . }}
+  name: {{ include "falco.fullname" . }}-metrics
+  namespace: {{ include "falco.namespace" . }}
   labels:
-    {{- include "falco-helm.labels" . | nindent 4 }}
+    {{- include "falco.labels" . | nindent 4 }}
     {{- with .Values.metrics.service.labels }}
     {{ toYaml . | nindent 4 }}
     {{- end }}
@@ -22,5 +22,5 @@ spec:
       protocol: {{ .Values.metrics.service.ports.metrics.protocol }}
       name: "metrics"
   selector:
-    {{- include "falco-helm.selectorLabels" . | nindent 4 }}
+    {{- include "falco.selectorLabels" . | nindent 4 }}
 {{- end }}

@@ -583,7 +583,7 @@ If you use a Proxy in your cluster, the requests between `Falco` and `Falcosidek
 
 ## Configuration
 
-The following table lists the main configurable parameters of the falco chart v4.22.0 and their default values. See [values.yaml](./values.yaml) for full list.
+The following table lists the main configurable parameters of the falco chart v5.0.0 and their default values. See [values.yaml](./values.yaml) for full list.
 
 ## Values
 
@@ -618,7 +618,7 @@ The following table lists the main configurable parameters of the falco chart v4
 | collectors.kubernetes.collectorPort | string | `""` | collectorPort designates the port on which the k8s-metacollector gRPC service listens. If not specified the value of the port named `broker-grpc` in k8s-metacollector.service.ports is used. The default values is 45000. It is used by the k8smeta plugin to connect to the k8s-metacollector. |
 | collectors.kubernetes.enabled | bool | `false` | enabled specifies whether the Kubernetes metadata should be collected using the k8smeta plugin and the k8s-metacollector component. It will deploy the k8s-metacollector external component that fetches Kubernetes metadata and pushes them to Falco instances. For more info see: https://github.com/falcosecurity/k8s-metacollector https://github.com/falcosecurity/charts/tree/master/charts/k8s-metacollector When this option is disabled, Falco falls back to the container annotations to grab the metadata. In such a case, only the ID, name, namespace, labels of the pod will be available. |
 | collectors.kubernetes.pluginRef | string | `"ghcr.io/falcosecurity/plugins/plugin/k8smeta:0.3.0"` | pluginRef is the OCI reference for the k8smeta plugin. It could be a full reference such as: "ghcr.io/falcosecurity/plugins/plugin/k8smeta:0.1.0". Or just name + tag: k8smeta:0.1.0. |
-| containerSecurityContext | object | `{}` | Set securityContext for the Falco container.For more info see the "falco-helm.securityContext" helper in "pod-template.tpl" |
+| containerSecurityContext | object | `{}` | Set securityContext for the Falco container.For more info see the "falco.securityContext" helper in "pod-template.tpl" |
 | controller.annotations | object | `{}` |  |
 | controller.daemonset.updateStrategy.type | string | `"RollingUpdate"` | Perform rolling updates by default in the DaemonSet agent ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/ |
 | controller.deployment.replicas | int | `1` | Number of replicas when installing Falco using a deployment. Change it if you really know what you are doing. For more info check the section on Plugins in the README.md file. |
@@ -745,7 +745,7 @@ The following table lists the main configurable parameters of the falco chart v4
 | falcoctl.image.pullPolicy | string | `"IfNotPresent"` | The image pull policy. |
 | falcoctl.image.registry | string | `"docker.io"` | The image registry to pull from. |
 | falcoctl.image.repository | string | `"falcosecurity/falcoctl"` | The image repository to pull from. |
-| falcoctl.image.tag | string | `"0.11.0"` | The image tag to pull. |
+| falcoctl.image.tag | string | `"0.11.2"` | The image tag to pull. |
 | falcosidekick | object | `{"enabled":false,"fullfqdn":false,"listenPort":""}` | For configuration values, see https://github.com/falcosecurity/charts/blob/master/charts/falcosidekick/values.yaml |
 | falcosidekick.enabled | bool | `false` | Enable falcosidekick deployment. |
 | falcosidekick.fullfqdn | bool | `false` | Enable usage of full FQDN of falcosidekick service (useful when a Proxy is used). |

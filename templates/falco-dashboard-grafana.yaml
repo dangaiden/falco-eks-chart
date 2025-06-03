@@ -6,10 +6,10 @@ metadata:
   {{ if .Values.grafana.dashboards.configMaps.falco.namespace }}
   namespace: {{ .Values.grafana.dashboards.configMaps.falco.namespace }}
   {{- else -}}
-  namespace: {{ include "falco-helm.namespace" . }}
+  namespace: {{ include "falco.namespace" . }}
   {{- end }}
   labels:
-    {{- include "falco-helm.labels" .  | nindent 4 }}
+    {{- include "falco.labels" .  | nindent 4 }}
     grafana_dashboard: "1"
   {{- if .Values.grafana.dashboards.configMaps.falco.folder }}
   annotations:

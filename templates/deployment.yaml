@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "falco-helm.fullname" . }}
-  namespace: {{ include "falco-helm.namespace" . }}
+  name: {{ include "falco.fullname" . }}
+  namespace: {{ include "falco.namespace" . }}
   labels:
-    {{- include "falco-helm.labels" . | nindent 4 }}
+    {{- include "falco.labels" . | nindent 4 }}
     {{- if .Values.controller.labels }}
       {{- toYaml .Values.controller.labels | nindent 4 }}
     {{- end }}
@@ -20,7 +20,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "falco-helm.selectorLabels" . | nindent 6 }}
+      {{- include "falco.selectorLabels" . | nindent 6 }}
   template:
-    {{- include "falco-helm.podTemplate" . | nindent 4 }}
+    {{- include "falco.podTemplate" . | nindent 4 }}
 {{- end }}

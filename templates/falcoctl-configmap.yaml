@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "falco-helm.fullname" . }}-falcoctl
-  namespace: {{ include "falco-helm.namespace" . }}
+  name: {{ include "falco.fullname" . }}-falcoctl
+  namespace: {{ include "falco.namespace" . }}
   labels:
-    {{- include "falco-helm.labels" . | nindent 4 }}
+    {{- include "falco.labels" . | nindent 4 }}
 data:
   falcoctl.yaml: |-
     {{- include "k8smeta.configuration" . -}}
-    {{- include "falco-helm.containerPlugin" . -}}
+    {{- include "falco.containerPlugin" . -}}
     {{- toYaml .Values.falcoctl.config | nindent 4 }}
 {{- end }}

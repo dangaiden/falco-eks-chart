@@ -2,9 +2,9 @@
 kind: Role
 apiVersion: {{ include "rbac.apiVersion" . }}
 metadata:
-  name: {{ include "falco-helm.fullname" . }}
+  name: {{ include "falco.fullname" . }}
   labels:
-    {{- include "falco-helm.labels" . | nindent 4 }}
+    {{- include "falco.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""
