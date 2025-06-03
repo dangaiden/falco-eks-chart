@@ -8,11 +8,11 @@ image:
   # -- The image pull policy.
   pullPolicy: IfNotPresent
   # -- The image registry to pull from.
-  registry: docker.io
+  registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
   # -- The image repository to pull from
-  repository: falcosecurity/falco
+  repository: sysdig/main-falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.41.0"
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
@@ -276,7 +276,7 @@ driver:
   # Always set it to false when using Falco with plugins.
   enabled: true
   # -- kind tells Falco which driver to use. Available options: kmod (kernel driver), ebpf (eBPF probe), modern_ebpf (modern eBPF probe).
-  kind: auto
+  kind: ebpf
   # -- kmod holds the configuration for the kernel module.
   kmod:
     # -- bufSizePreset determines the size of the shared space between Falco and its drivers.
@@ -298,7 +298,7 @@ driver:
     # On kernel versions >= 5.8 'CAP_PERFMON' and 'CAP_BPF' could replace 'CAP_SYS_ADMIN' but please pay attention to the 'kernel.perf_event_paranoid' value on your system.
     # Usually 'kernel.perf_event_paranoid>2' means that you cannot use 'CAP_PERFMON' and you should fallback to 'CAP_SYS_ADMIN', but the behavior changes across different distros.
     # Read more on that here: https://falco.org/docs/setup/container/#docker-least-privileged-ebpf-probe
-    leastPrivileged: false
+    leastPrivileged: true
     # -- bufSizePreset determines the size of the shared space between Falco and its drivers.
     # This shared space serves as a temporary storage for syscall events.
     bufSizePreset: 4
@@ -339,11 +339,11 @@ driver:
         # -- The image pull policy.
         pullPolicy: IfNotPresent
         # -- The image registry to pull from.
-        registry: docker.io
+        registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
         # -- The image repository to pull from.
-        repository: falcosecurity/falco-driver-loader
+        repository: sysdig/falco-driver-loader
         #  -- Overrides the image tag whose default is the chart appVersion.
-        tag: ""
+        tag: "0.41.0"
       # -- Extra environment variables that will be pass onto Falco driver loader init container.
       env: []
       # -- Arguments to pass to the Falco driver loader init container.
@@ -522,9 +522,9 @@ falcoctl:
     # -- The image pull policy.
     pullPolicy: IfNotPresent
     # -- The image registry to pull from.
-    registry: docker.io
+    registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
     # -- The image repository to pull from.
-    repository: falcosecurity/falcoctl
+    repository: sysdig/falcoctl
     # -- The image tag to pull.
     tag: "0.11.2"
   artifact:
