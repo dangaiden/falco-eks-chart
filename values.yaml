@@ -8,11 +8,11 @@ image:
   # -- The image pull policy.
   pullPolicy: IfNotPresent
   # -- The image registry to pull from.
-  registry: docker.io
+  registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
   # -- The image repository to pull from
-  repository: falcosecurity/falco
+  repository: sysdig/main-falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.41.0"
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
@@ -343,11 +343,11 @@ driver:
         # -- The image pull policy.
         pullPolicy: IfNotPresent
         # -- The image registry to pull from.
-        registry: docker.io
+        registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
         # -- The image repository to pull from.
-        repository: falcosecurity/falco-driver-loader
+        repository: sysdig/falco-driver-loader
         #  -- Overrides the image tag whose default is the chart appVersion.
-        tag: ""
+        tag: "0.41.0"
       # -- Extra environment variables that will be pass onto Falco driver loader init container.
       env: []
       # -- Arguments to pass to the Falco driver loader init container.
@@ -526,11 +526,11 @@ falcoctl:
     # -- The image pull policy.
     pullPolicy: IfNotPresent
     # -- The image registry to pull from.
-    registry: docker.io
+    registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
     # -- The image repository to pull from.
-    repository: falcosecurity/falcoctl
+    repository: sysdig/falcoctl
     # -- The image tag to pull.
-    tag: "0.11.0"
+    tag: "0.11.2"
   artifact:
     # -- Runs "falcoctl artifact install" command as an init container. It is used to install artfacts before
     # Falco starts. It provides them to Falco by using an emptyDir volume.
