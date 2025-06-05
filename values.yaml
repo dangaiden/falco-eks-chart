@@ -21,7 +21,7 @@ nameOverride: ""
 # -- Same as nameOverride but for the fullname.
 fullnameOverride: ""
 # -- Override the deployment namespace
-namespaceOverride: ""
+namespaceOverride: "falco"
 
 # -- Add additional pod annotations
 podAnnotations: {}
