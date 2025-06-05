@@ -17,16 +17,3 @@ sources:
 maintainers:
   - name: The Falco Authors
     email: cncf-falco-dev@lists.cncf.io
-dependencies:
-  - name: falcosidekick
-    version: "0.9.*"
-    condition: falcosidekick.enabled
-    repository: https://falcosecurity.github.io/charts
-  - name: k8s-metacollector
-    version: 0.1.*
-    repository: https://falcosecurity.github.io/charts
-    condition: collectors.kubernetes.enabled
-  - name: falco-talon
-    version: 0.2.*
-    repository: https://falcosecurity.github.io/charts
-    condition: falcotalon.enabled

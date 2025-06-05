@@ -34,7 +34,7 @@ Create chart name and version as used by the chart label.
 Allow the release namespace to be overridden
 */}}
 {{- define "falco.namespace" -}}
-{{- default .Release.Namespace .Values.namespaceOverride -}}
+{{- default .Values.namespaceOverride -}}
 {{- end -}}
 
 {{/*
@@ -46,7 +46,7 @@ helm.sh/chart: {{ include "falco.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/managed-by: Helm
 {{- end }}
 
 {{/*
@@ -133,8 +133,9 @@ Return the appropriate apiVersion for rbac.
 {{- if not .Values.falco.http_output.url -}}
     {{- $falcoName := include "falco.fullname" . -}}
     {{- $listenPort := .Values.falcosidekick.listenport | default "2801" -}}
+    {{- $namespace := .Values.namespaceOverride | default "falco" -}}
     {{- if .Values.falcosidekick.fullfqdn -}}
-       {{- printf "http://%s-falcosidekick.%s.svc.cluster.local:%s" $falcoName .Release.Namespace $listenPort -}}
+       {{- printf "http://%s-falcosidekick.%s.svc.cluster.local:%s" $falcoName $namespace $listenPort -}}
     {{- else -}}
         {{- printf "http://%s-falcosidekick:%s" $falcoName $listenPort -}}
     {{- end -}}
