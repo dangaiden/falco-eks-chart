@@ -8,11 +8,11 @@ image:
   # -- The image pull policy.
   pullPolicy: IfNotPresent
   # -- The image registry to pull from.
-  registry: docker.io
+  registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
   # -- The image repository to pull from
-  repository: falcosecurity/falco
+  repository: sysdig/main-falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.41.3"
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
@@ -21,7 +21,7 @@ nameOverride: ""
 # -- Same as nameOverride but for the fullname.
 fullnameOverride: ""
 # -- Override the deployment namespace
-namespaceOverride: ""
+namespaceOverride: "falco"
 
 # -- Add additional pod annotations
 podAnnotations: {}
@@ -343,11 +343,11 @@ driver:
         # -- The image pull policy.
         pullPolicy: IfNotPresent
         # -- The image registry to pull from.
-        registry: docker.io
+        registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
         # -- The image repository to pull from.
-        repository: falcosecurity/falco-driver-loader
+        repository: sysdig/falco-driver-loader
         #  -- Overrides the image tag whose default is the chart appVersion.
-        tag: ""
+        tag: "0.41.3"
       # -- Extra environment variables that will be pass onto Falco driver loader init container.
       env: []
       # -- Arguments to pass to the Falco driver loader init container.
@@ -540,9 +540,9 @@ falcoctl:
     # -- The image pull policy.
     pullPolicy: IfNotPresent
     # -- The image registry to pull from.
-    registry: docker.io
+    registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
     # -- The image repository to pull from.
-    repository: falcosecurity/falcoctl
+    repository: sysdig/falcoctl
     # -- The image tag to pull.
     tag: "0.11.2"
   artifact:
