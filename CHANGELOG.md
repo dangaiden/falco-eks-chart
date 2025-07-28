@@ -3,6 +3,50 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v6.2.1
+
+* Bump container plugin to 0.3.3
+
+## v6.2.0
+
+* Switch to `collectors.containerEngine` configuration by default
+* Update `collectors.containerEngine.engines` default values
+* Fix containerd socket path configuration
+* Address "container.name shows container.id" issue
+* Address "Missing k8s.pod name, container.name, other metadata with k3s" issue
+* Bump container plugin to 0.3.2
+
+## v6.1.0
+
+* feat(falco): Add possibility to custom falco pods hostname
+
+## v6.0.2
+
+* Bump Falco to 0.41.3
+* Bump container plugin to 0.3.1
+
+## v6.0.1
+
+* Bump Falco to 0.41.2
+* Bump container plugin to 0.3.0
+
+## v6.0.0
+
+* Rename Falco Talon configuration keys naming
+
+## v5.0.3
+
+* Bump container plugin to 0.2.6
+
+## v5.0.2
+
+* Bump container plugin to 0.2.5
+* Bump Falco to 0.41.1
+
+## v5.0.1
+
+* Correct installation issue when both artifact installation and follow are enabled
+
 ## v5.0.0
 * Bump falcoctl to 0.11.2
 * Use default falco image flavor (wolfi) by default

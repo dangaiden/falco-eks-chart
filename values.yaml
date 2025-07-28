@@ -8,11 +8,11 @@ image:
   # -- The image pull policy.
   pullPolicy: IfNotPresent
   # -- The image registry to pull from.
-  registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
+  registry: docker.io
   # -- The image repository to pull from
-  repository: sysdig/main-falco
+  repository: falcosecurity/falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: "0.41.0"
+  tag: ""
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
@@ -21,7 +21,7 @@ nameOverride: ""
 # -- Same as nameOverride but for the fullname.
 fullnameOverride: ""
 # -- Override the deployment namespace
-namespaceOverride: "falco"
+namespaceOverride: ""
 
 # -- Add additional pod annotations
 podAnnotations: {}
@@ -79,6 +79,10 @@ podSecurityContext: {}
 #
 # -- Set securityContext for the Falco container.For more info see the "falco.securityContext" helper in "pod-template.tpl"
 containerSecurityContext: {}
+
+scc:
+  # -- Create OpenShift's Security Context Constraint.
+  create: true
 
 resources:
   # -- Although resources needed are subjective on the actual workload we provide
@@ -339,11 +343,11 @@ driver:
         # -- The image pull policy.
         pullPolicy: IfNotPresent
         # -- The image registry to pull from.
-        registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
+        registry: docker.io
         # -- The image repository to pull from.
-        repository: sysdig/falco-driver-loader
+        repository: falcosecurity/falco-driver-loader
         #  -- Overrides the image tag whose default is the chart appVersion.
-        tag: "0.41.0"
+        tag: ""
       # -- Extra environment variables that will be pass onto Falco driver loader init container.
       env: []
       # -- Arguments to pass to the Falco driver loader init container.
@@ -361,21 +365,21 @@ collectors:
   # -- This collector is deprecated and will be removed in the future. Please use the containerEngine collector instead.
   docker:
     # -- Enable Docker support.
-    enabled: true
+    enabled: false
     # -- The path of the Docker daemon socket.
     socket: /var/run/docker.sock
 
   # -- This collector is deprecated and will be removed in the future. Please use the containerEngine collector instead.
   containerd:
     # -- Enable ContainerD support.
-    enabled: true
+    enabled: false
     # -- The path of the ContainerD socket.
-    socket: /run/containerd/containerd.sock
+    socket: /run/host-containerd/containerd.sock
 
   # -- This collector is deprecated and will be removed in the future. Please use the containerEngine collector instead.
   crio:
     # -- Enable CRI-O support.
-    enabled: true
+    enabled: false
     # -- The path of the CRI-O socket.
     socket: /run/crio/crio.sock
 
@@ -385,11 +389,11 @@ collectors:
   # Keep in mind that the old collectors (docker, containerd, crio, podman) will use the container plugin to collect metadata under the hood.
   containerEngine:
     # -- Enable Container Engine support.
-    enabled: false
+    enabled: true
     # -- pluginRef is the OCI reference for the container plugin. It could be a full reference such as
-    # "ghcr.io/falcosecurity/plugins/plugin/container:0.2.0". Or just name + tag: containerengine:0.2.0.
-    pluginRef: "ghcr.io/falcosecurity/plugins/plugin/container:0.2.4"
-    # -- labelMaxLen is the maximum length of the labels that can be used in the container engine plugin.
+    # "ghcr.io/falcosecurity/plugins/plugin/container:0.3.3". Or just name + tag: container:0.3.3.
+    pluginRef: "ghcr.io/falcosecurity/plugins/plugin/container:0.3.3"
+    # -- labelMaxLen is the maximum length of the labels that can be used in the container plugin.
     # container labels larger than this value won't be collected.
     labelMaxLen: 100
     # -- withSize specifies whether to enable container size inspection, which is inherently slow.
@@ -397,6 +401,8 @@ collectors:
     # -- hooks specify the hooks that will be used to collect metadata from the container engine.
     # The available hooks are: create, start.
     hooks: ["create"]
+    # -- engines specify the container engines that will be used to collect metadata.
+    # See https://github.com/falcosecurity/plugins/blob/main/plugins/container/README.md#configuration
     engines:
       docker:
         enabled: true
@@ -406,10 +412,16 @@ collectors:
         sockets: ["/run/podman/podman.sock"]
       containerd:
         enabled: true
-        sockets: ["/run/containerd/containerd.sock"]
+        sockets: ["/run/host-containerd/containerd.sock"]
       cri:
         enabled: true
-        sockets: ["/run/crio/crio.sock"]
+        sockets:
+          [
+            "/run/containerd/containerd.sock",
+            "/run/crio/crio.sock",
+            "/run/k3s/containerd/containerd.sock",
+            "/run/host-containerd/containerd.sock",
+          ]
       lxc:
         enabled: true
       libvirt_lxc:
@@ -462,6 +474,9 @@ extra:
   # -- Additional initContainers for Falco pods.
   initContainers: []
 
+# -- Override hostname in falco pod
+podHostname:
+
 # -- certificates used by webserver and grpc server.
 # paste certificate content or use helm with --set-file
 # or use existing secret containing key, crt, ca as well as pem bundle
@@ -509,10 +524,13 @@ falcosidekick:
   # -- Listen port. Default value: 2801
   listenPort: ""
 
-# -- For configuration values, see https://github.com/falcosecurity/charts/blob/master/charts/falco-talon/values.yaml
-falcotalon:
-  # -- Enable falcotalon deployment.
+# -- Enable the response actions using Falco Talon.
+responseActions:
   enabled: false
+
+# -- For configuration values, see https://github.com/falcosecurity/charts/blob/master/charts/falco-talon/values.yaml
+# -- It must be used in conjunction with the response_actions.enabled option.
+falco-talon: {}
 
 ####################
 # falcoctl config  #
@@ -522,9 +540,9 @@ falcoctl:
     # -- The image pull policy.
     pullPolicy: IfNotPresent
     # -- The image registry to pull from.
-    registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
+    registry: docker.io
     # -- The image repository to pull from.
-    repository: sysdig/falcoctl
+    repository: falcosecurity/falcoctl
     # -- The image tag to pull.
     tag: "0.11.2"
   artifact:
