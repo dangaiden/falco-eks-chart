@@ -12,7 +12,7 @@ image:
   # -- The image repository to pull from
   repository: sysdig/main-falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: "0.41.3"
+  tag: "0.41.3-multiarch"
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
@@ -343,7 +343,7 @@ driver:
         # -- The image repository to pull from.
         repository: sysdig/falco-driver-loader
         #  -- Overrides the image tag whose default is the chart appVersion.
-        tag: "0.41.3"
+        tag: "0.41.3-multiarch"
       # -- Extra environment variables that will be pass onto Falco driver loader init container.
       env: []
       # -- Arguments to pass to the Falco driver loader init container.
@@ -540,7 +540,7 @@ falcoctl:
     # -- The image repository to pull from.
     repository: sysdig/falcoctl
     # -- The image tag to pull.
-    tag: "0.11.2"
+    tag: "0.11.2-multiarch"
   artifact:
     # -- Runs "falcoctl artifact install" command as an init container. It is used to install artfacts before
     # Falco starts. It provides them to Falco by using an emptyDir volume.
