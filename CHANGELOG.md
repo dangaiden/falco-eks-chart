@@ -3,6 +3,10 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v6.2.2
+
+* AWS specific: Fixed issue with multi architecture
+
 ## v6.2.1
 
 * Bump container plugin to 0.3.3
