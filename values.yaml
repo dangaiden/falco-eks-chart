@@ -12,7 +12,7 @@ image:
   # -- The image repository to pull from
   repository: sysdig/main-falco
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
-  tag: "0.41.3-multiarch"
+  tag: "0.41.3-multi"
 
 # -- Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
