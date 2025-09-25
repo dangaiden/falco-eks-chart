@@ -3,6 +3,10 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v6.2.3
+
+* Updated Falcoctl image to 0.11.4
+
 ## v6.2.2
 
 * AWS specific: Fixed issue with multi architecture
